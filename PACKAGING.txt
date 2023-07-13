@@ -1,0 +1,148 @@
+Packaging instructions for 4 deliveries :
+
+- Python package
+- MacOS application
+- Windows exe file
+- linux debian package
+
+
+------------------------------------------------
+--- Python package
+------------------------------------------------
+
+You need to install python on your computer.
+Python is installed out-of-the-box in MacOS.
+
+You need to create a virtual environment for python
+and install some python packages
+inside Terminal window :
+python3 -m venv /path/to/your/dir
+source /path/to/your/dir/bin/activate
+python3 -m pip install build
+python3 -m pip install twine
+python3 -m pip install pyinstaller
+
+Visit URL https://github.com/juliedoligez/gaiacalc
+Download all files from GitHub (Code / Download ZIP)
+You should get the file gaiacalc-main.zip
+Unzip the file
+You should have the directory gaiacalc-main on your disk.
+
+inside Terminal window :
+cd gaiacalc-main
+#edit pyproject.toml to set project name and version
+
+#build gaiacalc python package
+python3 -m build
+
+#upload to Pypi
+twine upload dist/*
+
+#check for the new package
+visit https://pypi.org/project/gaiacalc
+
+
+------------------------------------------------
+--- MacOS application
+------------------------------------------------
+
+#while running MacOS
+#starting from the gaiacalc-main dir
+cd src/gaiacalc
+pyinstaller pyinstaller.macos.spec
+
+#create dmg file
+cd dist
+hdiutil create -srcfolder gaiacalc.app gaiacalc
+
+#now you have the gaiacalc.dmg disk image to deploy
+#this is the file you can download from http://gaia.doligez.fr
+
+
+------------------------------------------------
+--- Windows exe file
+------------------------------------------------
+
+#while running windows
+#we use OVH public cloud instance running Windows server 2022 (Standard Desktop)
+#we log as administrator
+
+#open https://www.python.org/downloads/release/python-3114
+#note that the link will change with python security updates
+#python-3114 stands for python version 3.11.4
+#if the link is wrong, try with python-3115, python-3116 and so on
+
+#download link "Windows installer (64 bit)" and run it
+#in popup, check "add python.exe to path", then "install now"
+#check that python is ok : type py in cmd window
+
+#get source code
+#visit URL https://github.com/juliedoligez/gaiacalc
+#download with menu CODE / Download ZIP
+#open zip file
+#extract zip file by dragging content gaiacalc-main into your Downloads dir
+
+#install needed packages
+#open cmd window
+pip install pyinstaller
+pip install msvc-runtime
+pip install gaiacalc #will dowload all dependancies
+
+#open cmd window
+cd Downloads/gaiacalc-main/src/gaiacalc
+pyinstaller pyinstaller.windows.spec
+
+#you have the gaiacalc.exe file inside dist dir
+#this is the file you can download from http://gaia.doligez.fr
+
+
+------------------------------------------------
+--- debian package
+------------------------------------------------
+
+#the debian package allows for downloading all versions of gaiacalc
+#this includes MacOS app and Windows exe files
+#therefore you have to package them before going down here
+#you also need to build and upload the python package on Pypi
+
+#and you also need the bigfile.csv.gz including all white dwarfs
+#for this one, visit http://gaia.doligez.fr
+#and use the last link at the bottom of teh page "oh yeah, I want this one"
+#otherwise ask for it to julie@doligez.fr
+
+#starting from a OVH public cloud instance with debian 11
+#log in with debian user
+
+Visit URL https://github.com/juliedoligez/gaiacalc from your browser
+Download all files from GitHub (Code / Download ZIP)
+You should get the file gaiacalc-main.zip
+Unzip the file
+You should have the directory gaiacalc-main on your disk.
+
+inside shell window
+cd gaiacalc-main/debian/root/packages
+
+#download gaiacalc from pypi
+#this will also download all dependencies
+#you will get then all .whl files for your configuration
+#this includes your processor type and your debian version
+#you have to re-package if you upgrade to debian version 12 and above
+sudo apt-get update
+sudo apt-get install python3-pip
+pip3 download gaiacalc
+#now you have all the .whl files ready to be packaged
+
+if you want to include other packages in the archive,
+move into gaiacalc-main/debian/root/data those files :
+gaiacalc.dmg (40 MB)
+gaiacalc.exe (40 MB)
+bigfile.csv.gz (700 MB) - download from gaia.doligez.fr or ask julie@doligez.fr
+
+#now time to build the archive
+cd gaiacalc-main
+dpkg-deb --build debian gaiacalc.deb
+
+#you get the gaiacalc.deb ready to deploy for any debian 11 server
+
+
+

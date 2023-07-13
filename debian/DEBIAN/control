@@ -1,0 +1,12 @@
+Package: gaiacalc
+Version: 0.9.0-1
+Priority: optional
+Installed-size: 54000
+Architecture: all
+Maintainer: Julie Doligez <julie@doligez.fr>
+Depends: python3-pip
+Description: Gaia White Dwarfs parameter interpolator
+ Starting from a list of Gaia EDR3 white dwarfs (including BP-RP and Gabs),
+ this tool will add 2 columns to your CSV file :  
+   - mass of the white dwarf [Mo]
+   - effective temperature [K]

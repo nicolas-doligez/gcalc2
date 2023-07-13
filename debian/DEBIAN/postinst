@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+
+#install gaiacalc python package and all dependencies
+/usr/bin/pip3 install --no-index --find-links /root/packages gaiacalc
+
+#add other packaging ready to download
+mv /root/data/* /usr/local/lib/python3.9/dist-packages/gaiacalc/data
+
+#install daemon and start it
+cp /root/init.d/gaiacalc /etc/init.d/gaiacalc
+update-rc.d gaiacalc defaults
+/etc/init.d/gaiacalc start
